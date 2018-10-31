@@ -26,7 +26,7 @@
         <% for(let i=0; i<Object.keys(status).length; i++){ %>
 		  <div class="col-sm-3">
 		  	<div class="card border-success bg-light">
-		  	  <h5 class="card-header"><%=nameList[i]%></h5>
+		  	  <h5 class="card-header">10.128.204.<%=nameList[i]%></h5>
 		  	  <div class="card-body" id="{{board.name}}">
 		  	  	<div class="container">
                     <% if( status[nameList[i]] === "上線中" ){ %>
@@ -36,6 +36,7 @@
                     <%} else{ %>
                     <h3><span id="<%=nameList[i]%>" class="badge badge-secondary"><%=status[nameList[i]]%></span></h3>
                     <%}%>
+                    <span id="<%=nameList[i]%>second" class="badge badge-pill badge-info"></span>
 		  	  	</div>
 		  	  </div>
 		  	</div>
@@ -59,6 +60,10 @@
 
           socket.on('message', function(msg){
             $('#status').append($('<li>').text(msg));
+          });
+
+          socket.on('showSecond', function(second, username){
+              document.getElementById(`${username}second`).innerHTML = second;
           });
 
           socket.on('handle', function(msg, username){

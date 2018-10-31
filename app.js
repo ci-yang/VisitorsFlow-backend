@@ -68,6 +68,25 @@ io.on('connection', (socket) => {
         }
     });
 
+    socket.on('getSecond', (second) => {
+        let id = socket.id;
+        let username = "";
+        //console.log('second: ' + second);
+
+        for (const key in name_id_dict) {
+            const value = name_id_dict[key];
+            if (value === id) {
+                username = key;      //key
+                break;
+            }
+        }
+        if (nameList.includes(username)) {
+            io.emit('showSecond', second, username);
+        } else {
+            console.log('我不認識你~~');
+        }
+    });
+
     socket.on('disconnect', () => {
         let id = socket.id;
         let username = "";
