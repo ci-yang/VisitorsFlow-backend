@@ -1,0 +1,54 @@
+{
+  "name": "visitorsflow-backend",
+  "version": "1.0.0",
+  "description": "beackend of VisitorsFlow to watch and analysis the data of this.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "DEBUG=app,app:* nodemon app.js",
+    "lint": "eslint app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ci-yang/VisitorsFlow-backend.git"
+  },
+  "author": "Ci Yang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ci-yang/VisitorsFlow-backend/issues"
+  },
+  "homepage": "https://github.com/ci-yang/VisitorsFlow-backend#readme",
+  "dependencies": {
+    "async-mysql": "^1.0.1",
+    "body-parser": "^1.18.3",
+    "chalk": "^2.4.1",
+    "cookie-parser": "^1.4.3",
+    "debug": "^3.1.0",
+    "express": "^4.16.3",
+    "express-session": "^1.15.6",
+    "mongodb": "^3.1.1",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.18.3",
+    "socket.io": "^2.1.1",
+    "socket.io-client": "^2.1.1",
+    "bootstrap": "^4.1.2",
+    "jquery": "^3.3.1",
+    "ejs": "^2.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.14.0"
+  },
+  "nodemonConfig": {
+    "restartable": "rs",
+    "ignore": [
+      "node_modules/**/node_modules"
+    ],
+    "delay": "2500",
+    "env": {
+      "NODE_ENV": "development",
+      "PORT": 5858
+    }
+  }
+}

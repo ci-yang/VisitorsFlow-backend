@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket</title>
+  </head>
+  <body>
+    <ul id="status"></ul>
+
+    <h3>12</h3>
+    <p id="12"></p>
+    <h3>23</h3>
+    <p id="23"></p>
+    <h3>24</h3>
+    <p id="24"></p>
+    <h3>32</h3>
+    <p id="32"></p>
+
+
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $(function () {
+          var socket = io();
+
+          //var person = prompt("Please enter your name:");
+
+
+          socket.emit('username', "監聽狀態的頁面");
+
+          socket.on('message', function(msg){
+            $('#status').append($('<li>').text(msg));
+          });
+
+          socket.on('handle', function(msg, username){
+            if( msg == 'problem' ){
+                if(username == "12") 
+                    document.getElementById("12").innerHTML='出問題啦';  
+                else if(username == "23")
+                    document.getElementById("23").innerHTML='出問題啦';
+                else if(username == "24")
+                    document.getElementById("24").innerHTML='出問題啦';
+                else if(username == "32")
+                    document.getElementById("32").innerHTML='出問題啦';
+            }
+
+            else if( msg == 'normal' ){
+                if(username == "12") 
+                    document.getElementById("12").innerHTML='上線中';  
+                else if(username == "23")
+                    document.getElementById("23").innerHTML='上線中';
+                else if(username == "24")
+                    document.getElementById("24").innerHTML='上線中';
+                else if(username == "32")
+                    document.getElementById("32").innerHTML='上線中';
+            }
+            else {
+                console.log("請回傳有效狀態")
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

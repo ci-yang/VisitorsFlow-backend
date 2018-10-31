@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%=title%></title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+  </head>
+  <body>
+    <nav class="nnavbar navbar-dark bg-dark">
+	     <div class="container">
+	       <div class="navbar-header">
+	         <p class="navbar-brand">VistorsFlow Watch</p>
+	       </div>
+	       <div id="navbar" class="navbar-collapse collapse">
+	         <ul class="nav navbar-nav">
+	           <li><a href="test.html">Introduction</a></li>
+	         </ul>
+	       </div><!--/.nav-collapse -->
+	     </div>
+	</nav>
+	<div>
+		<br>
+	</div>
+	<div class="container" id="app">
+		<div class="row">
+        <% for(let i=0; i<Object.keys(status).length; i++){ %>
+		  <div class="col-sm-3">
+		  	<div class="card border-success bg-light">
+		  	  <h5 class="card-header"><%=nameList[i]%></h5>
+		  	  <div class="card-body" id="{{board.name}}">
+		  	  	<div class="container">
+                    <% if( status[nameList[i]] === "上線中" ){ %>
+                    <h3><span id="<%=nameList[i]%>" class="badge badge-success"><%=status[nameList[i]]%></span></h3>
+                    <%} else if( status[nameList[i]] === "出問題啦" ){ %>
+                    <h3><span id="<%=nameList[i]%>" class="badge badge-danger"><%=status[nameList[i]]%></span></h3>
+                    <%} else{ %>
+                    <h3><span id="<%=nameList[i]%>" class="badge badge-secondary"><%=status[nameList[i]]%></span></h3>
+                    <%}%>
+		  	  	</div>
+		  	  </div>
+		  	</div>
+		  </div>
+        <%}%>
+		</div>
+	</div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+    <script>
+      $(function () {
+          var socket = io();
+
+          //var person = prompt("Please enter your name:");
+
+
+          socket.emit('username', "監聽狀態的頁面");
+
+          socket.on('message', function(msg){
+            $('#status').append($('<li>').text(msg));
+          });
+
+          socket.on('handle', function(msg, username){
+            if( msg == 'problem' ){
+                if(username == "12"){
+                    document.getElementById("12").innerHTML='出問題啦';
+                    $("#12").attr('class', 'badge badge-danger');
+                }
+                else if(username == "23"){
+                    document.getElementById("23").innerHTML='出問題啦';
+                    $("#23").attr('class', 'badge badge-danger');
+                }
+                else if(username == "24"){
+                    document.getElementById("24").innerHTML='出問題啦';
+                    $("#24").attr('class', 'badge badge-danger');
+                }
+                else if(username == "32"){
+                    document.getElementById("32").innerHTML='出問題啦';
+                    $("#32").attr('class', 'badge badge-danger');
+                }
+            }
+
+            else if( msg == 'normal' ){
+                if(username == "12"){
+                    document.getElementById("12").innerHTML='上線中';
+                    $("#12").attr('class', 'badge badge-success');
+                }  
+                else if(username == "23"){
+                    document.getElementById("23").innerHTML='上線中';
+                    $("#23").attr('class', 'badge badge-success');
+                }
+                else if(username == "24"){
+                    document.getElementById("24").innerHTML='上線中';
+                    $("#24").attr('class', 'badge badge-success');
+                }
+                else if(username == "32"){
+                    document.getElementById("32").innerHTML='上線中';
+                    $("#32").attr('class', 'badge badge-success');
+                }
+            }
+            else {
+                console.log("請回傳有效狀態")
+            }
+          });
+        });
+    </script>
+  </body>
+</html>
