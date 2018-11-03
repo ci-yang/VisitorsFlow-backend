@@ -1,2 +1,4 @@
 node_modules
 pythonTest
+public/jsonFiles
+.DS_Store

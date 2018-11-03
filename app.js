@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const chalk = require('chalk');
 const debug = require('debug')('app');
@@ -7,6 +8,7 @@ const http = require('http').Server(app);
 const io = require('socket.io')(http);
 const path = require('path');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 const port = process.env.port || 5858;
 
 
@@ -14,12 +16,56 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/jsonFIles', express.static('public/jsonFIles'));
 
 app.use('/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
+
+// Store config
+function specificDir(name) {
+    try {
+        // Configuring appropriate storage 
+        let storage = multer.diskStorage({
+            // Absolute path
+            destination: function (req, file, cb) {
+                cb(null, 'public/jsonFiles/'+name);
+            },
+            // Match the field name in the request body
+            filename: function (req, file, cb) {
+                cb(null, file.originalname);
+            }
+        });
+        if (!fs.existsSync('public/jsonFiles/'+name)) {
+            fs.mkdirSync('public/jsonFiles/'+name);
+        }
+        return storage;
+    } catch (ex) {
+        console.log("Error :\n"+ex);
+    }
+}
+
+/*
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/jsonFiles/')
+    },
+
+    filename: function (req, file, cb) {
+        let fileFormat = (file.originalname).split(".");
+        cb(null, file.originalname);
+        // cb(null, file.fieldname + '-' + Date.now() + "." + fileFormat[fileFormat.length - 1]);
+        // cb(null, fileFormat[0] + "." + fileFormat[fileFormat.length - 1]);
+    }
+});
+*/
+// const upload = multer({ storage: storage });
+const upload_12 = multer({ storage: specificDir('12') });
+const upload_23 = multer({ storage: specificDir('23') });
+const upload_24 = multer({ storage: specificDir('24') });
+const upload_32 = multer({ storage: specificDir('32') });
 
 let name_id_dict = {};
 status = {
@@ -123,7 +169,43 @@ app.get('/', (req, res) => {
     );
 });
 
-//取得線上人
+function uploadCallback(req, res, next) {
+    var file = req.file;
+
+    try {
+        console.log('文件類型：%s', file.mimetype);
+        console.log('原始文件名：%s', file.originalname);
+        console.log('文件大小：%s', file.size);
+        console.log('文件保存路徑：%s', file.path);
+
+        res.send({
+            msg: "上傳成功",
+            mimetype: file.mimetype,
+            originalname: file.originalname,
+            size: file.size,
+            path: file.path,
+            // imageURL: "localhost:5858/" + file.path.split("/")[1] + "/" + file.path.split("/")[2]
+        });
+    } catch (err) {
+        console.log(err);
+        res.send({
+            msg: "error",
+            code: 0,
+            status: 400
+        });
+    }
+}
+
+// 上傳 JSON
+app.post('/upload_12', upload_12.single('json'), uploadCallback);
+app.post('/upload_23', upload_23.single('json'), uploadCallback);
+app.post('/upload_24', upload_24.single('json'), uploadCallback);
+app.post('/upload_32', upload_32.single('json'), uploadCallback);
+
+app.get('/form', function(req, res, next){
+    var form = fs.readFileSync('./public/form.html', {encoding: 'utf8'});
+    res.send(form);
+});
 
 http.listen(port, function (err) {
     if (err) {
