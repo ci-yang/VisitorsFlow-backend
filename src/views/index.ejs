@@ -2,8 +2,10 @@
 <html>
   <head>
     <title><%=title%></title>
+    <link href="css/main.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
   </head>
   <body>
     <nav class="nnavbar navbar-dark bg-dark">
@@ -43,12 +45,87 @@
 		  </div>
         <%}%>
 		</div>
+        <br>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card border-danger bg-light">
+                    <h5 class="card-header">Call API<span class="badge badge-pill badge-warning msLength"><%=messages.length%></span></h5>
+                    <div id="callAPI">
+                        <div class="immediately-message">
+                            <div class="immediately-messages">
+                                <div id="signal" class="message">
+                                    <% if( currentMessageObj.signal == 'OK' ){ %>
+                                    <p class="message-text"><i class="fas fa-check"></i></p>
+                                    <% } else { %>
+                                    <p class="message-text"><i class="fas fa-times"></i></p>
+                                    <%}%>
+                                </div>
+                                <div id="info" class="message">
+                                    <p class="message-text"><%=currentMessageObj.info%></p>
+                                </div>
+                                <div id="status" class="message">
+                                    <p class="message-text"><%=currentMessageObj.status%></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class=""container><h6 style="text-align: center">歷史紀錄</h6></div>
+                        <div class="message-scoller-bar messageHistory">
+                            <% for(let i=messages.length-1; i>=0; i--){  %>
+                            <div class="messages">
+                                <div id="signal" class="message">
+                                    <% if( messages[i].signal == 'OK' ){ %>
+                                    <p class="message-text"><i class="fas fa-check"></i></p>
+                                    <% } else { %>
+                                    <p class="message-text"><i class="fas fa-times"></i></p>
+                                    <%}%>
+                                </div>
+                                <div id="info" class="message">
+                                    <p class="message-text"><%=messages[i].info%></p>
+                                </div>
+                                <div id="status" class="message">
+                                    <p class="message-text"><%=messages[i].status%></p>
+                                </div>
+                            </div>
+                            <%}%>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="card border-danger bg-light visCard">
+                    <div class="card-header cardHeader">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#v1" role="tab">Visualization</a></li>
+                        </ul>
+                    </div>
+                    <div class="card-block">
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="v1">
+                                <div id="container" style="height: 400px; min-width: 310px"></div>
+                            </div>
+                            <div class="tab-pane" id="v2">
+                                <div id="container2" style="height: 400px; min-width: 310px">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
 	</div>
 
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="js/jquery.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script>
+    </script>
+    <script src="js/hightChart.js"></script>
+    
+
+
     <script>
       $(function () {
           var socket = io();
@@ -58,8 +135,45 @@
 
           socket.emit('username', "監聽狀態的頁面");
 
-          socket.on('message', function(msg){
-            $('#status').append($('<li>').text(msg));
+          socket.on('emptyHistory', function(messages){
+              $('.messageHistory').empty()
+              $('.msLength').text(messages.length);
+          });
+
+          socket.on('messageClient', function(msgObj, messages){
+            $('.immediately-messages #info p').text(msgObj.info);
+            $('.immediately-messages #status p').text(msgObj.status);
+            $('.msLength').text(messages.length);
+
+            if(msgObj.signal === 'OK'){
+                $('.immediately-messages #signal p i').replaceWith(`<i class="fas fa-check"></i>`);
+                // $('.immediately-messages #signal').text(`<p class="message-text"><i class="fas fa-check"></i></p>`);
+                $('.messageHistory').prepend(`<div class="messages">
+                                <div id="signal" class="message">
+                                    <p class="message-text"><i class="fas fa-check"></i></p>
+                                </div>
+                                <div id="info" class="message">
+                                    <p class="message-text">${msgObj.info}</p>
+                                </div>
+                                <div id="status" class="message">
+                                    <p class="message-text">${msgObj.status}</p>
+                                </div>
+                                </div>`);
+            } else {
+                $('.immediately-messages #signal p i').replaceWith(`<i class="fas fa-times"></i>`);
+                // $('.immediately-messages #signal').text(`<p class="message-text"><i class="fas fa-times"></i></p>`);
+                $('.messageHistory').prepend(`<div class="messages">
+                                <div id="signal" class="message">
+                                    <p class="message-text"><i class="fas fa-times"></i></p>
+                                </div>
+                                <div id="info" class="message">
+                                    <p class="message-text">${msgObj.info}</p>
+                                </div>
+                                <div id="status" class="message">
+                                    <p class="message-text">${msgObj.status}</p>
+                                </div>
+                                </div>`);
+            }
           });
 
           socket.on('showSecond', function(second, username){

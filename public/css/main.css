@@ -1,0 +1,64 @@
+#callAPI {
+    text-align: center;
+    display: inline-block;
+    height: 416px;
+    min-width: 310px;
+}
+.messages {
+    display: grid;
+    grid-template-columns: 20% 40% auto;
+    grid-gap: 2px;
+    height: 40px;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 2%;
+    padding: 2px;
+    background-color: #C89EC4
+}
+.immediately-message {
+    height:50px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.immediately-messages {
+    display: grid;
+    grid-template-columns: 20% 40% auto;
+    grid-gap: 2px;
+    height: 40px;
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 2px;
+    background-color: #feee7d;
+}
+.immediately-messages #signal {
+    background-color: #60c5ba
+}
+.immediately-messages #info {
+    background-color: #ef5285
+}
+.immediately-messages #status {
+    background-color: #a5dff9
+}
+
+.message-scoller-bar {
+    overflow-y: scroll; 
+    height:300px;
+}
+.message {
+    text-align: center;
+    font-size: 6px;
+}
+.message-text {
+    margin-top: 8px;
+    margin-bottom: 0;
+}
+
+#signal {
+    background-color: #67D5B5
+}
+#info {
+    background-color: #EE7785
+}
+#status {
+    background-color: #84B1ED
+}
