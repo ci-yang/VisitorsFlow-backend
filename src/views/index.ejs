@@ -54,7 +54,7 @@
                         <div class="immediately-message">
                             <div class="immediately-messages">
                                 <div id="signal" class="message">
-                                    <% if( currentMessageObj.signal == 'OK' ){ %>
+                                    <% if( currentMessageObj.signal == '成功' ){ %>
                                     <p class="message-text"><i class="fas fa-check"></i></p>
                                     <% } else { %>
                                     <p class="message-text"><i class="fas fa-times"></i></p>
@@ -73,7 +73,7 @@
                             <% for(let i=messages.length-1; i>=0; i--){  %>
                             <div class="messages">
                                 <div id="signal" class="message">
-                                    <% if( messages[i].signal == 'OK' ){ %>
+                                    <% if( messages[i].signal == '成功' ){ %>
                                     <p class="message-text"><i class="fas fa-check"></i></p>
                                     <% } else { %>
                                     <p class="message-text"><i class="fas fa-times"></i></p>
@@ -145,7 +145,7 @@
             $('.immediately-messages #status p').text(msgObj.status);
             $('.msLength').text(messages.length);
 
-            if(msgObj.signal === 'OK'){
+            if(msgObj.signal === '成功'){
                 $('.immediately-messages #signal p i').replaceWith(`<i class="fas fa-check"></i>`);
                 // $('.immediately-messages #signal').text(`<p class="message-text"><i class="fas fa-check"></i></p>`);
                 $('.messageHistory').prepend(`<div class="messages">

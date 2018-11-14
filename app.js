@@ -34,12 +34,14 @@ let currentMessageObj = {
 };
 
 const today = new Date();
+/*
 const mySchedule = schedule.scheduleJob({hour: 23, minute: 59}, function(){
   //console.log('The answer to life, the universe, and everything!');
   messages = [];
   console.log(`message is empty`);
   io.emit('emptyHistory', messages);
 });
+*/
 
 
 app.use(bodyParser.urlencoded({ extended: false }));
