@@ -1,0 +1,262 @@
+<!doctype html>
+<html>
+  <head>
+    <title><%=title%></title>
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .btn {
+            margin-left: 8px;
+        }
+    </style>
+  </head>
+  <body>
+    <nav class="nnavbar navbar-dark bg-dark">
+	     <div class="container">
+	       <div class="navbar-header">
+	         <p class="navbar-brand"><%=title%></p>
+	       </div>
+	       <div id="navbar" class="navbar-collapse collapse">
+	         <ul class="nav navbar-nav">
+	           <li><a href="test.html">Introduction</a></li>
+	         </ul>
+	       </div><!--/.nav-collapse -->
+	     </div>
+	</nav>
+	<div>
+		<br>
+	</div>
+	<div class="container" id="app">
+        <h3 style="text-align: center">花博資料</h3>
+        <br>
+
+        <div class='row'>
+            <div class="col-md-2">
+                <div class='float-left'>
+                    <h1><span id="place" class="badge badge-secondary">一區</span></h1>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text" for="date_select">日期選擇</label>
+                    </div>
+                    <select class="custom-select" name= "date_select" id="date_select">
+                        <% for( let i = 0; i < dateArray.length; i += 1  ) { %>
+                        <option value="<%=i%>"><%=dateArray[i]%></option>
+                        <%}%>
+                    </select>
+                    <button type="button" id="submit" class="btn btn-light">查詢</button>
+                    <button type="button" id="csv" class="btn btn-light">csv</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class='float-right'>
+                <button type="button" id="camera12" class="btn btn-secondary">一區</button>
+                <button type="button" id="camera32" class="btn btn-success">五區西</button>
+                <button type="button" id="camera23" class="btn btn-danger">五區東1</button>
+                <button type="button" id="camera24" class="btn btn-warning">五區東2</button>
+                <button type="button" class="btn btn-info" disabled>五區</button>
+                <button type="button" class="btn btn-dark" disabled>全部</button>
+                </div>
+            </div>
+            
+        </div>
+        <div style="align: center" class='row'>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">time</th>
+                        <th scope="col">in</th>
+                        <th scope="col">out</th>
+                        <th scope="col">stay</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <% for( let i = 0; i < data.camera12.peopleflowObject.length; i += 1  ) { %>
+                    <tr>
+                        <td scope="row"><%=data.camera12.peopleflowObject[i].time%></th>
+                        <td><%=data.camera12.peopleflowObject[i].inCount%></td>
+                        <td><%=data.camera12.peopleflowObject[i].outCount%></td>
+                        <td><%=data.camera12.peopleflowObject[i].stayCount%></td>
+                    </tr>
+                    <%}%>
+                </tbody>
+            </table>
+        </div>
+	</div>
+
+
+    <script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/tableExport.js"></script> 
+    <script>
+        let data;
+        let date = '2018-11-03'
+
+        $( "#date_select" ).change(function() {
+            str=""
+            $( "select option:selected" ).each(function() {
+                str = $( this ).text();
+                date = $( this ).text();
+            });
+        });
+
+        $( "#csv" ).on('click', () => {
+            let ip = $('#place').text();
+            $('.table').tableExport({
+                filename: `${ip}_${date}`,
+                format: 'csv',
+                head_delimiter: ',',
+                column_delimiter: ','
+            });
+        });
+
+        $( "#submit" ).on('click', () => {
+            axios.get(`/visitorsFlowTable/tableAPI?date=${date}`)
+            .then(function (response) {
+                // handle success
+                let data = response.data;
+                // console.log(data)
+                $('#dataTable').children().remove();
+                $('#place').attr('class', 'badge badge-secondary')
+                $('#place').text('一區')
+                for( let i = 0; i < data.camera12.peopleflowObject.length; i += 1  ) {
+                    $('#dataTable').append(`<tr>
+                        <td scope="row">${data.camera12.peopleflowObject[i].time}</th>
+                        <td>${data.camera12.peopleflowObject[i].inCount}</td>
+                        <td>${data.camera12.peopleflowObject[i].outCount}</td>
+                        <td>${data.camera12.peopleflowObject[i].stayCount}</td>
+                        </tr>`)
+                }
+                $('#camera12').on('click', () => {
+                    $('#dataTable').children().remove();
+                    $('#place').attr('class', 'badge badge-secondary')
+                    $('#place').text('一區')
+                    for( let i = 0; i < data.camera12.peopleflowObject.length; i += 1  ) {
+                        $('#dataTable').append(`<tr>
+                            <td scope="row">${data.camera12.peopleflowObject[i].time}</th>
+                            <td>${data.camera12.peopleflowObject[i].inCount}</td>
+                            <td>${data.camera12.peopleflowObject[i].outCount}</td>
+                            <td>${data.camera12.peopleflowObject[i].stayCount}</td>
+                            </tr>`)
+                    }
+                });
+                $('#camera32').on('click', () => {
+                    $('#dataTable').children().remove();
+                    $('#place').attr('class', 'badge badge-success')
+                    $('#place').text('五區西')
+                    for( let i = 0; i < data.camera32.peopleflowObject.length; i += 1  ) {
+                        $('#dataTable').append(`<tr>
+                            <td scope="row">${data.camera32.peopleflowObject[i].time}</th>
+                            <td>${data.camera32.peopleflowObject[i].inCount}</td>
+                            <td>${data.camera32.peopleflowObject[i].outCount}</td>
+                            <td>${data.camera32.peopleflowObject[i].stayCount}</td>
+                            </tr>`)
+                    }
+                });
+                $('#camera23').on('click', () => {
+                    $('#dataTable').children().remove();
+                    $('#place').attr('class', 'badge badge-danger')
+                    $('#place').text('五區東1')
+                    for( let i = 0; i < data.camera23.peopleflowObject.length; i += 1  ) {
+                        $('#dataTable').append(`<tr>
+                            <td scope="row">${data.camera23.peopleflowObject[i].time}</th>
+                            <td>${data.camera23.peopleflowObject[i].inCount}</td>
+                            <td>${data.camera23.peopleflowObject[i].outCount}</td>
+                            <td>${data.camera23.peopleflowObject[i].stayCount}</td>
+                            </tr>`)
+                    }
+                });
+                $('#camera24').on('click', () => {
+                    $('#dataTable').children().remove();
+                    $('#place').attr('class', 'badge badge-warning')
+                    $('#place').text('五區東2')
+                    for( let i = 0; i < data.camera24.peopleflowObject.length; i += 1  ) {
+                        $('#dataTable').append(`<tr>
+                            <td scope="row">${data.camera24.peopleflowObject[i].time}</th>
+                            <td>${data.camera24.peopleflowObject[i].inCount}</td>
+                            <td>${data.camera24.peopleflowObject[i].outCount}</td>
+                            <td>${data.camera24.peopleflowObject[i].stayCount}</td>
+                            </tr>`)
+                    }
+                });
+            })
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+        });
+
+        // 第一次載入頁面時呼叫
+        axios.get(`/visitorsFlowTable/tableAPI?date=${date}`)
+        .then(function (response) {
+            // handle success
+            let data = response.data;
+            console.log(data)
+            $('#camera12').on('click', () => {
+                $('#dataTable').children().remove();
+                $('#place').attr('class', 'badge badge-secondary')
+                $('#place').text('一區')
+                for( let i = 0; i < data.camera12.peopleflowObject.length; i += 1  ) {
+                    $('#dataTable').append(`<tr>
+                        <td scope="row">${data.camera12.peopleflowObject[i].time}</th>
+                        <td>${data.camera12.peopleflowObject[i].inCount}</td>
+                        <td>${data.camera12.peopleflowObject[i].outCount}</td>
+                        <td>${data.camera12.peopleflowObject[i].stayCount}</td>
+                        </tr>`)
+                }
+            });
+            $('#camera32').on('click', () => {
+                $('#dataTable').children().remove();
+                $('#place').attr('class', 'badge badge-success')
+                $('#place').text('五區西')
+                for( let i = 0; i < data.camera32.peopleflowObject.length; i += 1  ) {
+                    $('#dataTable').append(`<tr>
+                        <td scope="row">${data.camera32.peopleflowObject[i].time}</th>
+                        <td>${data.camera32.peopleflowObject[i].inCount}</td>
+                        <td>${data.camera32.peopleflowObject[i].outCount}</td>
+                        <td>${data.camera32.peopleflowObject[i].stayCount}</td>
+                        </tr>`)
+                }
+            });
+            $('#camera23').on('click', () => {
+                $('#dataTable').children().remove();
+                $('#place').attr('class', 'badge badge-danger')
+                $('#place').text('五區東1')
+                for( let i = 0; i < data.camera23.peopleflowObject.length; i += 1  ) {
+                    $('#dataTable').append(`<tr>
+                        <td scope="row">${data.camera23.peopleflowObject[i].time}</th>
+                        <td>${data.camera23.peopleflowObject[i].inCount}</td>
+                        <td>${data.camera23.peopleflowObject[i].outCount}</td>
+                        <td>${data.camera23.peopleflowObject[i].stayCount}</td>
+                        </tr>`)
+                }
+            });
+            $('#camera24').on('click', () => {
+                $('#dataTable').children().remove();
+                $('#place').attr('class', 'badge badge-warning')
+                $('#place').text('五區東2')
+                for( let i = 0; i < data.camera24.peopleflowObject.length; i += 1  ) {
+                    $('#dataTable').append(`<tr>
+                        <td scope="row">${data.camera24.peopleflowObject[i].time}</th>
+                        <td>${data.camera24.peopleflowObject[i].inCount}</td>
+                        <td>${data.camera24.peopleflowObject[i].outCount}</td>
+                        <td>${data.camera24.peopleflowObject[i].stayCount}</td>
+                        </tr>`)
+                }
+            });
+            
+
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+    </script>
+
+  </body>
+</html>

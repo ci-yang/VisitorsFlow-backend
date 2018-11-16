@@ -53,6 +53,7 @@ app.use('/jsonFIles', express.static('public/jsonFIles'));
 app.use('/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
+app.use('/js', express.static(path.join(__dirname, '/node_modules/jquery-tableexport/dist')));
 app.set('views', './src/views');
 app.set('view engine', 'ejs');
 
@@ -191,7 +192,12 @@ io.on('connection', (socket) => {
 })
 
 const visitorsFlowAPIRouter = require('./src/routes/visitorsFlowAPIRoutes');
+const cameraDataAPIRouter = require('./src/routes/cameraDataAPIRoutes');
+
 app.use('/visitorsFlow', visitorsFlowAPIRouter);
+app.use('/visitorsFlowTable', cameraDataAPIRouter);
+// app.use('/', cameraDataAPIRouter);
+
 
 app.get('/', (req, res) => {
   // res.send("Welcome to my world~");
