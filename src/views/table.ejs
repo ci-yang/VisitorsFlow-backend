@@ -46,7 +46,11 @@
                     </div>
                     <select class="custom-select" name= "date_select" id="date_select">
                         <% for( let i = 0; i < dateArray.length; i += 1  ) { %>
+                        <% if( i === 0 ) { %>
+                        <option value="<%=i%>" selected><%=dateArray[i]%></option>
+                        <%} else {%>
                         <option value="<%=i%>"><%=dateArray[i]%></option>
+                        <%}%>
                         <%}%>
                     </select>
                     <button type="button" id="submit" class="btn btn-light">查詢</button>
@@ -59,8 +63,8 @@
                 <button type="button" id="camera32" class="btn btn-success">五區西</button>
                 <button type="button" id="camera23" class="btn btn-danger">五區東1</button>
                 <button type="button" id="camera24" class="btn btn-warning">五區東2</button>
-                <button type="button" class="btn btn-info" disabled>五區</button>
-                <button type="button" class="btn btn-dark" disabled>全部</button>
+                <button type="button" id="camera5zone" class="btn btn-info">五區</button>
+                <button type="button" id="cameraAll" class="btn btn-dark">全部</button>
                 </div>
             </div>
             
@@ -184,6 +188,32 @@
                             </tr>`)
                     }
                 });
+                $('#camera5zone').on('click', () => {
+                    $('#dataTable').children().remove();
+                    $('#place').attr('class', 'badge badge-info')
+                    $('#place').text('五區')
+                    for( let i = 0; i < data.camera5zone.peopleflowObject.length; i += 1  ) {
+                        $('#dataTable').append(`<tr>
+                            <td scope="row">${data.camera5zone.peopleflowObject[i].time}</th>
+                            <td>${data.camera5zone.peopleflowObject[i].inCount}</td>
+                            <td>${data.camera5zone.peopleflowObject[i].outCount}</td>
+                            <td>${data.camera5zone.peopleflowObject[i].stayCount}</td>
+                            </tr>`)
+                    }
+                });
+                $('#cameraAll').on('click', () => {
+                    $('#dataTable').children().remove();
+                    $('#place').attr('class', 'badge badge-dark')
+                    $('#place').text('全部')
+                    for( let i = 0; i < data.cameraAll.peopleflowObject.length; i += 1  ) {
+                        $('#dataTable').append(`<tr>
+                            <td scope="row">${data.cameraAll.peopleflowObject[i].time}</th>
+                            <td>${data.cameraAll.peopleflowObject[i].inCount}</td>
+                            <td>${data.cameraAll.peopleflowObject[i].outCount}</td>
+                            <td>${data.cameraAll.peopleflowObject[i].stayCount}</td>
+                            </tr>`)
+                    }
+                });
             })
             .catch(function (error) {
                 // handle error
@@ -249,8 +279,32 @@
                         </tr>`)
                 }
             });
-            
-
+            $('#camera5zone').on('click', () => {
+                $('#dataTable').children().remove();
+                $('#place').attr('class', 'badge badge-info')
+                $('#place').text('五區')
+                for( let i = 0; i < data.camera5zone.peopleflowObject.length; i += 1  ) {
+                    $('#dataTable').append(`<tr>
+                        <td scope="row">${data.camera5zone.peopleflowObject[i].time}</th>
+                        <td>${data.camera5zone.peopleflowObject[i].inCount}</td>
+                        <td>${data.camera5zone.peopleflowObject[i].outCount}</td>
+                        <td>${data.camera5zone.peopleflowObject[i].stayCount}</td>
+                        </tr>`)
+                }
+            });
+            $('#cameraAll').on('click', () => {
+                $('#dataTable').children().remove();
+                $('#place').attr('class', 'badge badge-dark')
+                $('#place').text('全部')
+                for( let i = 0; i < data.cameraAll.peopleflowObject.length; i += 1  ) {
+                    $('#dataTable').append(`<tr>
+                        <td scope="row">${data.cameraAll.peopleflowObject[i].time}</th>
+                        <td>${data.cameraAll.peopleflowObject[i].inCount}</td>
+                        <td>${data.cameraAll.peopleflowObject[i].outCount}</td>
+                        <td>${data.cameraAll.peopleflowObject[i].stayCount}</td>
+                        </tr>`)
+                }
+            });
         })
         .catch(function (error) {
             // handle error

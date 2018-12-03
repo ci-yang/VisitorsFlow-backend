@@ -42,6 +42,64 @@ getData = async (ip, date) => {
   await connection.end();
 };
 
+// get the data from the 5zone includes ip 23, 24, 32
+get5ZoneData = async (date) => {
+  const url = {
+    host,
+    user,
+    password,
+    database
+  };
+  let rows;
+  const ipString = 'ip';
+  const timeString = 'time';
+  const stateString = 'state';
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + 1);
+  nextDateString = nextDate.toLocaleDateString();
+
+  try {
+    connection = await mysql.connect(url);
+    // rows = await connection.query(`SELECT * FROM ${tableName} ORDER BY time ASC LIMIT 2000`);
+    // query = `SELECT COUNT(*) as peopleAmount, ${ipString} FROM PeopleFlow WHERE ${ipString}=${ip}`;
+    query = `SELECT COUNT(*) as peopleAmount, ${ipString}, ${timeString}, ${stateString} FROM PeopleFlow WHERE ${ipString} = '23' or ${ipString} = '24' or ${ipString} = '32' and ${timeString} >= '${date}' and ${timeString} < '${nextDateString}' GROUP BY HOUR(time), DAYOFMONTH(time), MONTH(time), ${stateString} order by ${timeString} ASC`
+    rows = await connection.query(query);
+    return rows;
+  } catch (err) {
+    debug(err.stack);
+  }
+  await connection.end();
+};
+
+// get all data
+getAllData = async (date) => {
+  const url = {
+    host,
+    user,
+    password,
+    database
+  };
+  let rows;
+  const ipString = 'ip';
+  const timeString = 'time';
+  const stateString = 'state';
+  const nextDate = new Date(date);
+  nextDate.setDate(nextDate.getDate() + 1);
+  nextDateString = nextDate.toLocaleDateString();
+
+  try {
+    connection = await mysql.connect(url);
+    // rows = await connection.query(`SELECT * FROM ${tableName} ORDER BY time ASC LIMIT 2000`);
+    // query = `SELECT COUNT(*) as peopleAmount, ${ipString} FROM PeopleFlow WHERE ${ipString}=${ip}`;
+    query = `SELECT COUNT(*) as peopleAmount, ${ipString}, ${timeString}, ${stateString} FROM PeopleFlow WHERE ${timeString} >= '${date}' and ${timeString} < '${nextDateString}' GROUP BY HOUR(time), DAYOFMONTH(time), MONTH(time), ${stateString} order by ${timeString} ASC`
+    rows = await connection.query(query);
+    return rows;
+  } catch (err) {
+    debug(err.stack);
+  }
+  await connection.end();
+};
+
 cameraDataAPIRouter.route('/tableAPI')
   .get((req, res) => {
     let { date } = req.query;
@@ -56,10 +114,8 @@ cameraDataAPIRouter.route('/tableAPI')
       const data12 = await getData('12', date);
       const data23 = await getData('23', date);
       const data24 = await getData('24', date);
-      // console.log(data);
-      // console.log(data2.length);
-      // console.log(data2);
-      // console.log(data24);
+      const data5zone = await get5ZoneData(date);
+      const allData= await getAllData(date);
 
       const camera12 = new Camera(12, '一區', date);
       camera12.setData(data12);
@@ -76,6 +132,14 @@ cameraDataAPIRouter.route('/tableAPI')
       const camera32 = new Camera(32, '五區西', date);
       camera32.setData(data32);
       camera32.generateTableData(); 
+
+      const camera5zone = new Camera(232432, '五區', date);
+      camera5zone.setData(data5zone);
+      camera5zone.generateTableData(); 
+
+      const cameraAll = new Camera(12232432, '全部', date);
+      cameraAll.setData(allData);
+      cameraAll.generateTableData(); 
 
       res.send({
             camera12:{
@@ -97,6 +161,16 @@ cameraDataAPIRouter.route('/tableAPI')
               ip: camera32.ip,
               name: camera32.name,
               peopleflowObject: camera32.peopleflowObject
+            },
+            camera5zone:{
+              ip: camera5zone.ip,
+              name: camera5zone.name,
+              peopleflowObject: camera5zone.peopleflowObject
+            },
+            cameraAll:{
+              ip: cameraAll.ip,
+              name: cameraAll.name,
+              peopleflowObject: cameraAll.peopleflowObject
             }
           });
     }())
