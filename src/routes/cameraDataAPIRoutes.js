@@ -183,8 +183,10 @@ cameraDataAPIRouter.route('/')
     const today = new Date();
     const days = (today.getDate() - startTime.getDate()) + 1;
     const dateArray = [];
+    const passMounths = today.getMonth() - startTime.getMonth();
 
-    for(let i = 0; i < days; i += 1) {
+
+    for(let i = 0; i < days + passMounths * 30; i += 1) {
       if(startTime.getDate() < 10){
         dateArray.push(`${startTime.getFullYear()}-${startTime.getMonth()+1}-0${startTime.getDate()}`);
       }
