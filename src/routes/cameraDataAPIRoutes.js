@@ -197,9 +197,10 @@ cameraDataAPIRouter.route('/')
     }    
 
     (async function mysqlAuthors() {
-      const data12 = await getData('12', date);
+      const todayString = new Date().toLocaleDateString()
+      const data12 = await getData('12', todayString);
 
-      const camera12 = new Camera(12, '一區', date);
+      const camera12 = new Camera(12, '一區', todayString);
       camera12.setData(data12);
       camera12.generateTableData(); 
 

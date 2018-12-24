@@ -46,7 +46,7 @@
                     </div>
                     <select class="custom-select" name= "date_select" id="date_select">
                         <% for( let i = 0; i < dateArray.length; i += 1  ) { %>
-                        <% if( i === 0 ) { %>
+                        <% if( i === dateArray.length-1 ) { %>
                         <option value="<%=i%>" selected><%=dateArray[i]%></option>
                         <%} else {%>
                         <option value="<%=i%>"><%=dateArray[i]%></option>
@@ -99,7 +99,9 @@
     <script type="text/javascript" src="js/tableExport.js"></script> 
     <script>
         let data;
-        let date = '2018-11-03'
+        let date = new Date().toLocaleDateString();
+        //let todayDate = new Date().toLocaleDateString();
+        date = date.replace(/[\/]/g, '-')
 
         $( "#date_select" ).change(function() {
             str=""
