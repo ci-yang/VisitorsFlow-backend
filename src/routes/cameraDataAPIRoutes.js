@@ -183,19 +183,28 @@ cameraDataAPIRouter.route('/')
     const today = new Date();
     const days = (today.getDate() - startTime.getDate()) + 1;
     const dateArray = [];
-    const passMounths = today.getMonth() - startTime.getMonth();
+    const passYear = today.getFullYear() - startTime.getFullYear();
+    const passMounths = today.getMonth() - startTime.getMonth() + (passYear * 12);
+    let tempDate;
+    let tempMonth;
 
-
-    for(let i = 0; i < days + passMounths * 30; i += 1) {
+    for(let i = 0; i < days + passMounths * 30 + 1; i += 1) {
       if(startTime.getDate() < 10){
-        dateArray.push(`${startTime.getFullYear()}-${startTime.getMonth()+1}-0${startTime.getDate()}`);
+        tempDate = `0${startTime.getDate()}`;
       }
       else{
-        dateArray.push(startTime.toLocaleDateString());
+        tempDate = startTime.getDate();
+        //dateArray.push(startTime.toLocaleDateString());
       }
+      if(startTime.getMonth() < 10){
+        tempMonth = `0${startTime.getMonth()+1}`;
+      }
+      else{
+        tempMonth = startTime.getMonth()+1;
+      }
+      dateArray.push(`${startTime.getFullYear()}-${tempMonth}-${tempDate}`);
       startTime.setDate(startTime.getDate()+1);
-    }    
-
+    }
     (async function mysqlAuthors() {
       const todayString = new Date().toLocaleDateString()
       const data12 = await getData('12', todayString);
@@ -203,6 +212,9 @@ cameraDataAPIRouter.route('/')
       const camera12 = new Camera(12, '一區', todayString);
       camera12.setData(data12);
       camera12.generateTableData(); 
+
+      debug(dateArray)
+
 
       res.render('table',
         {
